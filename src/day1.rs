@@ -1,3 +1,4 @@
+#[derive(Eq, PartialEq)]
 struct Elf {
     pub calories: Vec<u32>,
 }
@@ -5,6 +6,18 @@ struct Elf {
 impl Elf {
     pub fn total_calories(&self) -> u32 {
         self.calories.iter().sum()
+    }
+}
+
+impl std::cmp::Ord for Elf {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.total_calories().cmp(&other.total_calories())
+    }
+}
+
+impl std::cmp::PartialOrd for Elf {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.total_calories().cmp(&other.total_calories()))
     }
 }
 
@@ -28,8 +41,18 @@ pub fn most_calories(list: &str) -> u32 {
         .total_calories()
 }
 
+pub fn total_top_three_calories(list: &str) -> u32 {
+    let mut elves = parse_elf_calories(list);
+    elves.sort();
+    let mut top_elves: Vec<Elf> = vec![];
+    for _ in 0..3 {
+        top_elves.push(elves.pop().expect("Not enough elves"))
+    }
+    top_elves.iter().map(|elf| elf.total_calories()).sum()
+}
+
 mod tests {
-    use super::{most_calories, parse_elf_calories};
+    use super::{most_calories, parse_elf_calories, total_top_three_calories};
     const EXAMPLE_LIST: &str = "1000
 2000
 3000
@@ -64,5 +87,10 @@ mod tests {
     #[test]
     fn test_most_calories() {
         assert_eq!(most_calories(EXAMPLE_LIST), 24_000)
+    }
+
+    #[test]
+    fn test_total_top_three_calories() {
+        assert_eq!(total_top_three_calories(EXAMPLE_LIST), 45_000)
     }
 }
