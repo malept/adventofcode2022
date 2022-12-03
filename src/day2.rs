@@ -24,36 +24,28 @@ impl RPS {
     }
 }
 
-struct Move {
-    pub rps: RPS,
-}
-
-impl FromStr for Move {
+impl FromStr for RPS {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "A" => Ok(Self { rps: RPS::Rock }),
-            "B" => Ok(Self { rps: RPS::Paper }),
-            "C" => Ok(Self { rps: RPS::Scissors }),
+            "A" => Ok(RPS::Rock),
+            "B" => Ok(RPS::Paper),
+            "C" => Ok(RPS::Scissors),
             _ => Err(()),
         }
     }
 }
 
-impl Move {
-    pub fn determine(opponent: RPS, value: &str) -> Self {
+impl RPS {
+    pub fn determine_move(opponent: RPS, value: &str) -> Self {
         match value {
             // Lose
-            "X" => Self {
-                rps: opponent.beats(),
-            },
+            "X" => opponent.beats(),
             // Draw
-            "Y" => Self { rps: opponent },
+            "Y" => opponent,
             // Win
-            "Z" => Self {
-                rps: opponent.beaten_by(),
-            },
+            "Z" => opponent.beaten_by(),
             _ => panic!("Invalid instruction"),
         }
     }
@@ -67,13 +59,13 @@ enum OutcomeScore {
 }
 
 struct Strategy {
-    initial: Move,
-    response: Move,
+    initial: RPS,
+    response: RPS,
 }
 
 impl Strategy {
     fn outcome(&self) -> &OutcomeScore {
-        match (self.initial.rps, self.response.rps) {
+        match (self.initial, self.response) {
             (RPS::Rock, RPS::Rock) | (RPS::Paper, RPS::Paper) | (RPS::Scissors, RPS::Scissors) => {
                 &OutcomeScore::DRAW
             }
@@ -86,15 +78,15 @@ impl Strategy {
         }
     }
     pub fn score(&self) -> u32 {
-        *self.outcome() as u32 + self.response.rps as u32
+        *self.outcome() as u32 + self.response as u32
     }
 }
 
 fn parse_strategy_guide(guide_lines: Vec<String>) -> impl Iterator<Item = Strategy> {
     guide_lines.into_iter().map(|line| {
         let items: Vec<&str> = line.split(" ").collect();
-        let initial: Move = items[0].parse().expect("Could not parse first item");
-        let response = Move::determine(initial.rps, items[1]);
+        let initial: RPS = items[0].parse().expect("Could not parse first item");
+        let response = RPS::determine_move(initial, items[1]);
         Strategy { initial, response }
     })
 }
