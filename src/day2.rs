@@ -1,10 +1,5 @@
 use std::str::FromStr;
 
-enum Player {
-    You,
-    Opponent,
-}
-
 #[derive(Clone, Copy)]
 enum RPS {
     Rock = 1,
@@ -12,8 +7,24 @@ enum RPS {
     Scissors = 3,
 }
 
+impl RPS {
+    pub fn beats(&self) -> RPS {
+        match self {
+            RPS::Rock => RPS::Scissors,
+            RPS::Paper => RPS::Rock,
+            RPS::Scissors => RPS::Paper,
+        }
+    }
+    pub fn beaten_by(&self) -> RPS {
+        match self {
+            RPS::Rock => RPS::Paper,
+            RPS::Paper => RPS::Scissors,
+            RPS::Scissors => RPS::Rock,
+        }
+    }
+}
+
 struct Move {
-    pub player: Player,
     pub rps: RPS,
 }
 
@@ -22,31 +33,28 @@ impl FromStr for Move {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "A" => Ok(Self {
-                player: Player::Opponent,
-                rps: RPS::Rock,
-            }),
-            "B" => Ok(Self {
-                player: Player::Opponent,
-                rps: RPS::Paper,
-            }),
-            "C" => Ok(Self {
-                player: Player::Opponent,
-                rps: RPS::Scissors,
-            }),
-            "X" => Ok(Self {
-                player: Player::You,
-                rps: RPS::Rock,
-            }),
-            "Y" => Ok(Self {
-                player: Player::You,
-                rps: RPS::Paper,
-            }),
-            "Z" => Ok(Self {
-                player: Player::You,
-                rps: RPS::Scissors,
-            }),
+            "A" => Ok(Self { rps: RPS::Rock }),
+            "B" => Ok(Self { rps: RPS::Paper }),
+            "C" => Ok(Self { rps: RPS::Scissors }),
             _ => Err(()),
+        }
+    }
+}
+
+impl Move {
+    pub fn determine(opponent: RPS, value: &str) -> Self {
+        match value {
+            // Lose
+            "X" => Self {
+                rps: opponent.beats(),
+            },
+            // Draw
+            "Y" => Self { rps: opponent },
+            // Win
+            "Z" => Self {
+                rps: opponent.beaten_by(),
+            },
+            _ => panic!("Invalid instruction"),
         }
     }
 }
@@ -85,10 +93,9 @@ impl Strategy {
 fn parse_strategy_guide(guide_lines: Vec<String>) -> impl Iterator<Item = Strategy> {
     guide_lines.into_iter().map(|line| {
         let items: Vec<&str> = line.split(" ").collect();
-        Strategy {
-            initial: items[0].parse().expect("Could not parse first item"),
-            response: items[1].parse().expect("Could not parse second item"),
-        }
+        let initial: Move = items[0].parse().expect("Could not parse first item");
+        let response = Move::determine(initial.rps, items[1]);
+        Strategy { initial, response }
     })
 }
 
@@ -107,6 +114,6 @@ C Z";
     #[test]
     fn test_strategy_guide_total_score() {
         let guide_lines = STRATEGY_GUIDE.split("\n").map(|l| l.to_string()).collect();
-        assert_eq!(super::strategy_guide_total_score(guide_lines), 15)
+        assert_eq!(super::strategy_guide_total_score(guide_lines), 12)
     }
 }
