@@ -101,7 +101,6 @@ fn parse_strategy_guide(guide_lines: Vec<String>) -> impl Iterator<Item = Strate
 
 pub fn strategy_guide_total_score(guide_lines: Vec<String>) -> u32 {
     parse_strategy_guide(guide_lines)
-        // .iter()
         .map(|strategy| strategy.score())
         .sum()
 }
