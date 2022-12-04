@@ -30,9 +30,6 @@ impl Assignment {
     fn len(&self) -> usize {
         let start = *self.0.start();
         let end = *self.0.end();
-        if start > end {
-            println!("WTF!!! Start = {}, End = {}", start, end)
-        }
         (end - start + 1) as usize
     }
 }
