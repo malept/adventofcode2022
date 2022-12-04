@@ -77,6 +77,18 @@ impl AssignmentPair {
             subset.0.all(|n| greatest.0.contains(&n))
         }
     }
+
+    pub fn overlaps(&self) -> bool {
+        let smallest = self.smallest_assignment();
+        let greatest = if smallest == &self.first {
+            &self.second
+        } else {
+            &self.first
+        };
+
+        let mut subset = (*smallest).clone();
+        subset.0.any(|n| greatest.0.contains(&n))
+    }
 }
 
 fn parse_assignment_pairs(lines: &Vec<String>) -> impl Iterator<Item = AssignmentPair> + '_ {
@@ -89,6 +101,12 @@ fn parse_assignment_pairs(lines: &Vec<String>) -> impl Iterator<Item = Assignmen
 pub fn full_subset_assignment_pairs_count(lines: &Vec<String>) -> usize {
     parse_assignment_pairs(lines)
         .filter(|pair| pair.smallest_is_subset())
+        .count()
+}
+
+pub fn any_overlap_assignment_pairs_count(lines: &Vec<String>) -> usize {
+    parse_assignment_pairs(lines)
+        .filter(|pair| pair.overlaps())
         .count()
 }
 
@@ -126,5 +144,12 @@ mod tests {
         let assignments = crate::util::testcase_to_input(ASSIGNMENTS);
         let count = super::full_subset_assignment_pairs_count(&assignments);
         assert_eq!(count, 2);
+    }
+
+    #[test]
+    fn test_any_overlap_assignment_pairs_count() {
+        let assignments = crate::util::testcase_to_input(ASSIGNMENTS);
+        let count = super::any_overlap_assignment_pairs_count(&assignments);
+        assert_eq!(count, 4);
     }
 }
