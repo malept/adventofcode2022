@@ -150,7 +150,7 @@ CrZsJsPPZsGzwwsLwLmpwMDw";
 
     #[test]
     fn test_parse_rucksacks() {
-        let rucksack_lines = RUCKSACKS.split("\n").map(|s| s.to_string()).collect();
+        let rucksack_lines = crate::util::testcase_to_input(RUCKSACKS);
         let rucksacks: Vec<super::Rucksack> = super::parse_rucksacks(&rucksack_lines).collect();
         assert_eq!(rucksacks.len(), 6);
         for rucksack in rucksacks {
@@ -163,14 +163,14 @@ CrZsJsPPZsGzwwsLwLmpwMDw";
 
     #[test]
     fn test_parse_rucksack_groups() {
-        let rucksack_lines = RUCKSACKS.split("\n").map(|s| s.to_string()).collect();
+        let rucksack_lines = crate::util::testcase_to_input(RUCKSACKS);
         let rucksack_groups = super::parse_rucksack_groups(&rucksack_lines);
         assert_eq!(rucksack_groups.len(), 2)
     }
 
     #[test]
     fn test_rucksack_duplicates() {
-        let rucksack_lines = RUCKSACKS.split("\n").map(|s| s.to_string()).collect();
+        let rucksack_lines = crate::util::testcase_to_input(RUCKSACKS);
         let rucksacks: Vec<super::Rucksack> = super::parse_rucksacks(&rucksack_lines).collect();
 
         assert_eq!(rucksacks[0].duplicates(), vec![super::Item('p')]);
@@ -183,14 +183,14 @@ CrZsJsPPZsGzwwsLwLmpwMDw";
 
     #[test]
     fn test_duplicate_priority_sum() {
-        let rucksack_lines = RUCKSACKS.split("\n").map(|s| s.to_string()).collect();
+        let rucksack_lines = crate::util::testcase_to_input(RUCKSACKS);
         let sum = super::duplicate_priority_sum(&rucksack_lines);
         assert_eq!(sum, 157)
     }
 
     #[test]
     fn test_rucksack_group_common_item() {
-        let rucksack_lines = RUCKSACKS.split("\n").map(|s| s.to_string()).collect();
+        let rucksack_lines = crate::util::testcase_to_input(RUCKSACKS);
         let rucksack_groups = super::parse_rucksack_groups(&rucksack_lines);
         assert_eq!(rucksack_groups[0].common_item().0, 'r');
         assert_eq!(rucksack_groups[1].common_item().0, 'Z');
@@ -198,7 +198,7 @@ CrZsJsPPZsGzwwsLwLmpwMDw";
 
     #[test]
     fn test_common_item_priority_sum() {
-        let rucksack_lines = RUCKSACKS.split("\n").map(|s| s.to_string()).collect();
+        let rucksack_lines = crate::util::testcase_to_input(RUCKSACKS);
         let sum = super::common_item_priority_sum(&rucksack_lines);
         assert_eq!(sum, 70)
     }

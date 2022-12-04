@@ -19,3 +19,7 @@ pub fn lines_for_file(path: PathBuf) -> std::io::Result<Vec<String>> {
         .map(|line| line.expect("line contains invalid UTF-8"))
         .collect())
 }
+
+pub fn testcase_to_input(testcase: &str) -> Vec<String> {
+    testcase.split("\n").map(|s| s.to_string()).collect()
+}
