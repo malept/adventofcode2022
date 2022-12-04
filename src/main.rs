@@ -9,8 +9,8 @@ fn main() -> std::io::Result<()> {
         let path = std::path::PathBuf::from(args[1].as_str()).canonicalize()?;
         let lines = util::lines_for_file(path)?;
         println!(
-            "Duplicate priority sum: {}",
-            day3::duplicate_priority_sum(lines)
+            "Common item priority sum: {}",
+            day3::common_item_priority_sum(&lines)
         );
     } else {
         println!("USAGE: {} [filename]", args[0]);
