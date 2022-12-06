@@ -44,8 +44,8 @@ impl Stacks {
         }
 
         let to: &mut Stack = self.0.get_mut(&to_id).expect("Could not find stack");
-        for c in to_move {
-            to.0.push(c);
+        for c in to_move.iter().rev() {
+            to.0.push(*c);
         }
         println!("* to stack: {}", to.0.len())
     }
@@ -217,6 +217,6 @@ move 1 from 1 to 2";
     #[test]
     fn test_top_stacked_crates() {
         let top = super::top_stacked_crates(CRATES.to_string());
-        assert_eq!(top, "CMZ".to_string())
+        assert_eq!(top, "MCD".to_string())
     }
 }
