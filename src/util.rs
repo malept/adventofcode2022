@@ -9,7 +9,7 @@ fn buffered_file(path: PathBuf) -> std::io::Result<BufReader<File>> {
 
 pub fn read_file(path: PathBuf) -> std::io::Result<String> {
     let reader = buffered_file(path)?;
-    Ok(read_to_string(reader)?.trim().to_string())
+    Ok(read_to_string(reader)?.trim_end().to_string())
 }
 
 pub fn lines_for_file(path: PathBuf) -> std::io::Result<Vec<String>> {
